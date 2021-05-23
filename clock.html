@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        background-color: black;
+        overflow: hidden;
+        user-select: none;
+      }
+      .clock {
+        transform-origin: 50% 0;
+      }
+      .hammer {
+        position: absolute;
+        left: 60%;
+        top: 50%;
+        width: 100px;
+      }
+      .hammer img {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock">
+      <img draggable="false" src="./clock.png" alt="" />
+    </div>
+    <div class="hammer">
+      <img draggable="false" src="./hammer.png" alt="" />
+    </div>
+    <audio src="clock.mp3"></audio>
+    <script>
+      window.onload = () => {
+        const hammer = document.querySelector('.hammer'),
+          clock = document.querySelector('.clock'),
+          audio = document.querySelector('audio'),
+          hammerW = hammer.offsetWidth,
+          hammerH = hammer.offsetHeight,
+          clockW = clock.offsetWidth,
+          clockH = clock.offsetHeight;
+
+        document.addEventListener('mousemove', e => {
+          const { clientX, clientY } = e;
+          hammer.style.left = clientX - hammerW + 40 + 'px';
+          hammer.style.top = clientY - hammerH + 40 + 'px';
+        });
+        document.addEventListener('click', () => {
+          const clockX = clock.offsetLeft,
+            clockY = clock.offsetTop,
+            hammerY = hammer.offsetTop,
+            hammerX = hammer.offsetLeft;
+          hammer.animate([{ transform: 'rotateZ(-30deg)' }], {
+            duration: 100,
+          });
+
+          if (
+            hammerX > clockX &&
+            hammerX + 50 < clockX + clockW &&
+            hammerY + 50 > clockY &&
+            hammerY + 50 < clockY + clockH
+          ) {
+            audio.currentTime = 0;
+            audio.play();
+            clock.animate(
+              [
+                { transform: 'rotate(0)' },
+                { transform: 'rotate(-30deg)' },
+                { transform: 'rotate(30deg)' },
+                { transform: 'rotate(-20deg)' },
+                { transform: 'rotate(20deg)' },
+                { transform: 'rotate(-10deg)' },
+                { transform: 'rotate(10deg)' },
+                { transform: 'rotate(0deg)' },
+              ],
+              {
+                duration: 300,
+                // iterations: 2,
+              }
+            );
+          }
+        });
+      };
+    </script>
+  </body>
+</html>
